@@ -34,15 +34,9 @@ function App(): React.JSX.Element {
 
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
       <div className="actions">
         <div className="action">
-          <h1>.juyear 에디터</h1>
+          <h1 className='text'>.juyear 에디터</h1>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
