@@ -1,8 +1,36 @@
-import Versions from './components/Versions'
+import { useState } from 'react'
 import electronLogo from './assets/electron.svg'
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const [content, setContent] = useState('');
+
+  const saveFile = async () => {
+    if (!content) {
+      alert('내용을 입력해주세요.');
+      return;
+    }
+
+    const testPath = 'C:\\Coding\\test.juyear';
+    const result = await window.api.saveFile(testPath,content);
+
+    if (result.success) {
+      alert("성공!");
+    } else {
+      alert("실패!")
+    }
+  }
+
+  const readFile = async () => {
+    const testPath = 'C:\\Coding\\test.juyear';
+    const result = await window.api.readFile(testPath);
+
+    if (result.success) {
+      alert('성공!');
+      setContent(result.content!);
+    } else {
+      alert("실패!");
+    }
+  }
 
   return (
     <>
@@ -12,22 +40,23 @@ function App(): React.JSX.Element {
         Build an Electron app with <span className="react">React</span>
         &nbsp;and <span className="ts">TypeScript</span>
       </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
       <div className="actions">
         <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
+          <h1>.juyear 에디터</h1>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="여기에 내용을 입력하세요"
+            rows={10}
+            cols={30}
+          ></textarea>
+          <br />
+          <button onClick={saveFile}>.juyear 파일로 저장</button>
         </div>
         <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
+          <button onClick={readFile}>.juyear 파일 읽기</button>
         </div>
       </div>
-      <Versions></Versions>
     </>
   )
 }
