@@ -1,7 +1,7 @@
 @import './base.css';
 
 body {
-  overflow: hidden;
+  overflow-y: scroll;
   background-size: cover;
   user-select: none;
   background-color: var(--color-primary-dark);
@@ -21,7 +21,7 @@ hr {
 }
 
 .container {
-  margin-top: 80px;
+  margin: 80px 0px;
   display: flex;
   flex-direction: column;
   max-width: 800px;
