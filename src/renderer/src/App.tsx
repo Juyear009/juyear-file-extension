@@ -1,7 +1,11 @@
 import { useState } from 'react'
+import { NoteEditor } from './components/NoteEditor'
+import { TitleInput } from './components/TitleInput'
 
 function App(): React.JSX.Element {
+  const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [curPath, setCurPath] = useState('')
 
   const saveFile = async () => {
     if (!content) {
@@ -16,6 +20,7 @@ function App(): React.JSX.Element {
 
     if (result.success) {
       alert('파일이 저장되었습니다.')
+      setCurPath(isSetPath.filePath!)
     } else {
       alert(`저장 실패: ${result.erorr}`)
     }
@@ -30,31 +35,25 @@ function App(): React.JSX.Element {
     if (result.success) {
       alert('파일을 읽어왔습니다.')
       setContent(result.content!)
+      setCurPath(isSetPath.filePath!)
     } else {
       alert(`읽기 실패: ${result.erorr}`)
     }
   }
 
   return (
-    <>
-      <div className="actions">
-        <div className="action">
-          <h1 className="text">.juyear 에디터</h1>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="여기에 내용을 입력하세요"
-            rows={10}
-            cols={30}
-          ></textarea>
-          <br />
-          <button onClick={saveFile}>.juyear 파일로 저장</button>
-        </div>
-        <div className="action">
-          <button onClick={readFile}>.juyear 파일 읽기</button>
-        </div>
+    <div className="container">
+      <div>
+        <h1 className="text">JUYEAR FILE EXTENSION</h1>
+        <TitleInput setTitle={setTitle} />
+        <hr />
+        <NoteEditor key={curPath} value={content} onChange={(val) => setContent(val)}></NoteEditor>
       </div>
-    </>
+      <div className="action">
+        <button onClick={saveFile}>.juyear 파일로 저장</button>
+        <button onClick={readFile}>.juyear 파일 읽기</button>
+      </div>
+    </div>
   )
 }
 

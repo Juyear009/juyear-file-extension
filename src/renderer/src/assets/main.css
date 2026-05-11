@@ -1,21 +1,25 @@
 @import './base.css';
 
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   background-size: cover;
   user-select: none;
   background-color: var(--color-primary-dark);
+  width: 100%;
 }
 
 #root {
   display: flex;
-  align-items: center;
   justify-content: center;
+  width: 100%;
+}
+
+.container {
+  margin-top: 80px;
+  display: flex;
   flex-direction: column;
-  margin-bottom: 80px;
+  max-width: 800px;
+  width: 100%;
 }
 
 .text {
