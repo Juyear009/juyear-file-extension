@@ -1,7 +1,14 @@
-import { ipcMain, dialog } from 'electron'
+import { ipcMain, dialog, globalShortcut, BrowserWindow } from 'electron'
 import { fileService } from './fileService'
 
 export function registerIpcHandlers(): void {
+  globalShortcut.register('CommandOrControl+S', () => {
+    const win = BrowserWindow.getFocusedWindow()
+    if (win) {
+      win.webContents.send('shortcut-save')
+    }
+  })
+
   ipcMain.handle('save-file', async (_event, filePath, content) => {
     try {
       fileService.save(filePath, content)

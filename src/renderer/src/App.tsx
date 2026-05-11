@@ -1,11 +1,29 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NoteEditor } from './components/NoteEditor'
 import { TitleInput } from './components/TitleInput'
 
 function App(): React.JSX.Element {
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
-  const [curPath, setCurPath] = useState<string>('')
+  const [curPath, setCurPath] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    let removeListener: void | (() => void)
+
+    try {
+      removeListener = window.api.onSaveCommand(() => {
+        saveFile()
+      })
+    } catch (error) {
+      console.error(error)
+    }
+
+    return () => {
+      if (typeof removeListener === 'function') {
+        removeListener()
+      }
+    }
+  }, [title, content, curPath])
 
   const saveFile = async () => {
     if (!content || !title) {
@@ -13,8 +31,15 @@ function App(): React.JSX.Element {
       return
     }
 
-    const isSetPath = await window.api.showSaveDialog()
-    if (!isSetPath.success) return
+    let path = curPath
+
+    if (!path) {
+      const isSetPath = await window.api.showSaveDialog()
+      if (!isSetPath.success) return
+
+      setCurPath(isSetPath.filePath!)
+      path = isSetPath.filePath!
+    }
 
     const noteData = {
       title,
@@ -23,11 +48,10 @@ function App(): React.JSX.Element {
     }
     const stringifiedData = JSON.stringify(noteData)
 
-    const result = await window.api.saveFile(isSetPath.filePath!, stringifiedData)
+    const result = await window.api.saveFile(path, stringifiedData)
 
     if (result.success) {
       alert('파일이 저장되었습니다.')
-      setCurPath(isSetPath.filePath!)
     } else {
       alert(`저장 실패: ${result.erorr}`)
     }

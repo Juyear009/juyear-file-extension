@@ -40,7 +40,7 @@ hr {
 }
 
 .container {
-  margin: 80px 0px;
+  margin: 90px 0px;
   display: flex;
   flex-direction: column;
   max-width: 800px;

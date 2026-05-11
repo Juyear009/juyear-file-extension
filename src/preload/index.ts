@@ -14,6 +14,13 @@ if (process.contextIsolated) {
       saveFile: (filePath: string, content: string) =>
         ipcRenderer.invoke('save-file', filePath, content),
       showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),
+      onSaveCommand: (callback) => {
+        const subsciption = (event) => callback()
+        ipcRenderer.on('shortcut-save', subsciption)
+        return () => {
+          ipcRenderer.removeListener('shortcut-save', subsciption)
+        }
+      },
       readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
       showReadDialog: () => ipcRenderer.invoke('show-read-dialog')
     })
