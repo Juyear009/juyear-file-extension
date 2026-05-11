@@ -3,20 +3,27 @@ import { NoteEditor } from './components/NoteEditor'
 import { TitleInput } from './components/TitleInput'
 
 function App(): React.JSX.Element {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [curPath, setCurPath] = useState('')
+  const [title, setTitle] = useState<string>('')
+  const [content, setContent] = useState<string>('')
+  const [curPath, setCurPath] = useState<string>('')
 
   const saveFile = async () => {
-    if (!content) {
-      alert('내용을 입력해주세요.')
+    if (!content || !title) {
+      alert('내용과 제목을 입력해주세요.')
       return
     }
 
     const isSetPath = await window.api.showSaveDialog()
     if (!isSetPath.success) return
 
-    const result = await window.api.saveFile(isSetPath.filePath!, content)
+    const noteData = {
+      title,
+      content,
+      lastModified: Date.now()
+    }
+    const stringifiedData = JSON.stringify(noteData)
+
+    const result = await window.api.saveFile(isSetPath.filePath!, stringifiedData)
 
     if (result.success) {
       alert('파일이 저장되었습니다.')
@@ -34,7 +41,9 @@ function App(): React.JSX.Element {
 
     if (result.success) {
       alert('파일을 읽어왔습니다.')
-      setContent(result.content!)
+      const noteData = JSON.parse(result.content!)
+      setTitle(noteData.title)
+      setContent(noteData.content)
       setCurPath(isSetPath.filePath!)
     } else {
       alert(`읽기 실패: ${result.erorr}`)
@@ -44,9 +53,9 @@ function App(): React.JSX.Element {
   return (
     <div className="container">
       <div>
-        <h1 className="text">JUYEAR FILE EXTENSION</h1>
-        <TitleInput setTitle={setTitle} />
-        <hr />
+        <h1 className="text">JUYEAR SECRET FILE EXTENSION</h1>
+        <TitleInput title={title} setTitle={setTitle} />
+        <hr className="divider" />
         <NoteEditor key={curPath} value={content} onChange={(val) => setContent(val)}></NoteEditor>
       </div>
       <div className="action">

@@ -12,7 +12,7 @@ export function registerIpcHandlers(): void {
     }
   })
 
-  ipcMain.handle('show-save-dialog', async () => {
+  ipcMain.handle('show-save-dialog', async (_event) => {
     const { filePath, canceled } = await dialog.showSaveDialog({
       title: '새 파일 저장',
       defaultPath: 'Untitled.juyear',
@@ -38,7 +38,7 @@ export function registerIpcHandlers(): void {
     }
   })
 
-  ipcMain.handle('show-read-dialog', async () => {
+  ipcMain.handle('show-read-dialog', async (_event) => {
     const { filePaths, canceled } = await dialog.showOpenDialog({
       title: '파일 열기',
       buttonLabel: '열기',
