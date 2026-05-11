@@ -1,34 +1,33 @@
 import { useState } from 'react'
-import electronLogo from './assets/electron.svg'
 
 function App(): React.JSX.Element {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState('')
 
   const saveFile = async () => {
     if (!content) {
-      alert('내용을 입력해주세요.');
-      return;
+      alert('내용을 입력해주세요.')
+      return
     }
 
-    const testPath = 'C:\\Coding\\test.juyear';
-    const result = await window.api.saveFile(testPath,content);
+    const testPath = 'C:\\Coding\\test.juyear'
+    const result = await window.api.saveFile(testPath, content)
 
     if (result.success) {
-      alert("성공!");
+      alert('성공!')
     } else {
-      alert("실패!")
+      alert('실패!')
     }
   }
 
   const readFile = async () => {
-    const testPath = 'C:\\Coding\\test.juyear';
-    const result = await window.api.readFile(testPath);
+    const testPath = 'C:\\Coding\\test.juyear'
+    const result = await window.api.readFile(testPath)
 
     if (result.success) {
-      alert('성공!');
-      setContent(result.content!);
+      alert('성공!')
+      setContent(result.content!)
     } else {
-      alert("실패!");
+      alert('실패!')
     }
   }
 
@@ -36,7 +35,7 @@ function App(): React.JSX.Element {
     <>
       <div className="actions">
         <div className="action">
-          <h1 className='text'>.juyear 에디터</h1>
+          <h1 className="text">.juyear 에디터</h1>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}

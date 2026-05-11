@@ -43,7 +43,7 @@ app.whenReady().then(() => {
   })
 
   // IPC Handlers
-  registerIpcHandlers();
+  registerIpcHandlers()
 
   createWindow()
 
