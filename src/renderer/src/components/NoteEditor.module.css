@@ -16,3 +16,35 @@
   outline: none;
   padding: 0 0 20px 0;
 }
+
+/* 1. 표 전체 레이아웃 */
+.editorWrapper :global(.milkdown table) {
+  width: 100%;
+  border-collapse: collapse; /* 선이 겹치지 않게 */
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden; /* 모서리 둥글게 적용 */
+  table-layout: fixed; /* 셀 너비 균등 분배 */
+}
+
+/* 2. 헤더(Header) 영역 */
+.editorWrapper :global(.milkdown th) {
+  background-color: var(--color-sub-dark); /* 아주 연한 배경색 */
+  font-weight: 600;
+  padding: 12px 15px;
+  border: 1px solid var(--color-primary-dark); /* 헤더 구분선 */
+  text-align: left;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트 말줄임 */
+}
+
+/* 3. 본문(Cell) 영역 */
+.editorWrapper :global(.milkdown td) {
+  background-color: var(--color-hover-dark);
+  padding: 12px 15px;
+  border: 1px solid var(--color-sub-dark); /* 칸 사이 가로선 */
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis;
+}

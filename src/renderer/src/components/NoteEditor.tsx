@@ -1,7 +1,7 @@
 import { history } from '@milkdown/plugin-history'
 import styles from './NoteEditor.module.css'
 import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/react'
-import { defaultValueCtx, Editor, rootCtx } from '@milkdown/kit/core'
+import { defaultValueCtx, Editor, editorViewOptionsCtx, rootCtx } from '@milkdown/kit/core'
 import { listener, listenerCtx } from '@milkdown/kit/plugin/listener'
 import { commonmark } from '@milkdown/kit/preset/commonmark'
 import { gfm } from '@milkdown/kit/preset/gfm'
@@ -13,10 +13,17 @@ const EditorComponent = ({ value, onChange }) => {
       .config((ctx) => {
         ctx.set(rootCtx, root)
         ctx.set(defaultValueCtx, value)
-
         ctx.get(listenerCtx).markdownUpdated((_, markdown) => {
           onChange(markdown)
         })
+        ctx.update(editorViewOptionsCtx, (prev) => ({
+          ...prev,
+          attributes: {
+            ...prev.attributes,
+            spellcheck: 'false',
+            autocomplete: 'off'
+          }
+        }))
       })
       .config(nord)
       .use(commonmark)
