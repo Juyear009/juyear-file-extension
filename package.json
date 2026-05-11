@@ -24,6 +24,7 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@milkdown/kit": "^7.20.0",
+    "@milkdown/plugin-upload": "^7.20.0",
     "@milkdown/prose": "^7.20.0",
     "@milkdown/react": "^7.20.0",
     "@milkdown/theme-nord": "^7.20.0"

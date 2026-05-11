@@ -48,3 +48,36 @@
   overflow: hidden; /* 넘치는 텍스트 숨김 */
   text-overflow: ellipsis;
 }
+
+/* 1. 이미지 및 컨테이너 스타일 */
+.editorWrapper :global(.milkdown p:has(img)) {
+  display: block !important;
+  text-align: center !important; /* 이미지와 캡션을 중앙으로 */
+  margin: 1.5rem 0 0 0 !important;
+}
+
+.editorWrapper :global(.milkdown img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--color-sub-dark);
+  display: block;
+  margin: 0 auto; /* 이미지 중앙 정렬 */
+}
+
+/* 2. 이미지 설명(Alt) 강제 노출 로직 */
+/* 이미지 뒤에 가상 요소를 생성하여 alt 속성값을 텍스트로 표시 */
+.editorWrapper :global(.milkdown p:has(img)::after) {
+  content: attr(alt);
+  display: block;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* 3. 입력 버그 해결: 이미지 문단 내 텍스트 격리 */
+.editorWrapper :global(.milkdown p:has(img)) {
+  /* 문단 내에서 텍스트가 이미지 옆에 붙지 못하도록 함 */
+  overflow: hidden;
+}

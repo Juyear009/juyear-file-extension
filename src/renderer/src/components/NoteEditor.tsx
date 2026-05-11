@@ -6,6 +6,7 @@ import { listener, listenerCtx } from '@milkdown/kit/plugin/listener'
 import { commonmark } from '@milkdown/kit/preset/commonmark'
 import { gfm } from '@milkdown/kit/preset/gfm'
 import { nord } from '@milkdown/theme-nord'
+import { upload } from '@milkdown/plugin-upload'
 
 const EditorComponent = ({ value, onChange }) => {
   useEditor((root) => {
@@ -30,6 +31,7 @@ const EditorComponent = ({ value, onChange }) => {
       .use(gfm)
       .use(history)
       .use(listener)
+      .use(upload)
   }, [])
 
   return <Milkdown />
