@@ -18,6 +18,8 @@ function createWindow(): void {
     }
   })
 
+  registerIpcHandlers(mainWindow)
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -41,9 +43,6 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
-  // IPC Handlers
-  registerIpcHandlers()
 
   createWindow()
 

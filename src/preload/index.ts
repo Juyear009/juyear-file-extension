@@ -15,7 +15,7 @@ if (process.contextIsolated) {
         ipcRenderer.invoke('save-file', filePath, content),
       showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),
       onSaveCommand: (callback) => {
-        const subsciption = (event) => callback()
+        const subsciption = (_event) => callback()
         ipcRenderer.on('shortcut-save', subsciption)
         return () => {
           ipcRenderer.removeListener('shortcut-save', subsciption)

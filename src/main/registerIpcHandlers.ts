@@ -1,11 +1,14 @@
 import { ipcMain, dialog, globalShortcut, BrowserWindow } from 'electron'
 import { fileService } from './fileService'
 
-export function registerIpcHandlers(): void {
-  globalShortcut.register('CommandOrControl+S', () => {
-    const win = BrowserWindow.getFocusedWindow()
-    if (win) {
-      win.webContents.send('shortcut-save')
+export function registerIpcHandlers(mainWindow: BrowserWindow): void {
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if ((input.control || input.meta) && input.key.toLowerCase() === 's') {
+      if (input.type === 'keyDown') {
+        console.log('앱 내부 Ctrl+S 감지')
+        mainWindow.webContents.send('shortcut-save')
+        event.preventDefault()
+      }
     }
   })
 

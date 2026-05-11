@@ -64,7 +64,7 @@ function App(): React.JSX.Element {
     const result = await window.api.readFile(isSetPath.filePath!)
 
     if (result.success) {
-      alert('파일을 읽어왔습니다.')
+      console.log('파일을 읽어왔습니다 : ')
       const noteData = JSON.parse(result.content!)
       setTitle(noteData.title)
       setContent(noteData.content)
