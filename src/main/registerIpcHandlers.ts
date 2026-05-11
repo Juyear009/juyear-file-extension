@@ -37,4 +37,19 @@ export function registerIpcHandlers(): void {
       return { success: false, error: error }
     }
   })
+
+  ipcMain.handle('show-read-dialog', async () => {
+    const { filePaths, canceled } = await dialog.showOpenDialog({
+      title: '파일 열기',
+      buttonLabel: '열기',
+      filters: [
+        { name: 'Juyear File', extensions: ['juyear'] },
+        { name: 'All Files', extensions: ['*'] }
+      ],
+      properties: ['openFile']
+    })
+
+    if (canceled || filePaths.length === 0) return { success: false }
+    return { success: true, filePath: filePaths[0] }
+  })
 }
