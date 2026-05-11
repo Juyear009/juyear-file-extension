@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { ipcMain, dialog } from 'electron'
 import { fileService } from './fileService'
 
 export function registerIpcHandlers(): void {
@@ -12,10 +12,25 @@ export function registerIpcHandlers(): void {
     }
   })
 
+  ipcMain.handle('show-save-dialog', async () => {
+    const { filePath, canceled } = await dialog.showSaveDialog({
+      title: '새 파일 저장',
+      defaultPath: 'Untitled.juyear',
+      buttonLabel: '저장',
+      filters: [
+        { name: 'Juyear File', extensions: ['juyear'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+
+    if (canceled) return { success: false }
+    return { success: true, filePath: filePath }
+  })
+
   ipcMain.handle('read-file', async (_event, filePath) => {
     try {
       const body = fileService.read(filePath)
-      console.log(body);
+      console.log(body)
       return { success: true, content: body }
     } catch (error) {
       console.log('파일 읽기 실패 : ', error)

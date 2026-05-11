@@ -13,6 +13,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', {
       saveFile: (filePath: string, content: string) =>
         ipcRenderer.invoke('save-file', filePath, content),
+      showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),
       readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath)
     })
   } catch (error) {

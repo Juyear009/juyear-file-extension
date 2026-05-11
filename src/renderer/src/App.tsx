@@ -9,8 +9,10 @@ function App(): React.JSX.Element {
       return
     }
 
-    const testPath = 'C:\\Coding\\test.juyear'
-    const result = await window.api.saveFile(testPath, content)
+    const isSetPath = await window.api.showSaveDialog()
+    if (!isSetPath.success) return
+
+    const result = await window.api.saveFile(isSetPath.filePath!, content)
 
     if (result.success) {
       alert('성공!')
@@ -24,10 +26,10 @@ function App(): React.JSX.Element {
     const result = await window.api.readFile(testPath)
 
     if (result.success) {
-      alert('성공!')
+      alert('파일이 저장되었습니다.')
       setContent(result.content!)
     } else {
-      alert('실패!')
+      alert(`저장 실패: ${result.erorr}`)
     }
   }
 
