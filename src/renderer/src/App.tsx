@@ -13,6 +13,7 @@ function App(): React.JSX.Element {
     visible: false
   })
   const [isSaved, setIsSaved] = useState<boolean>(true)
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false)
 
   useEffect(() => {
     let removeListener: void | (() => void)
@@ -33,7 +34,9 @@ function App(): React.JSX.Element {
   }, [title, content, curPath])
 
   useEffect(() => {
-    setIsSaved(false)
+    if (!isInitialLoading) {
+      setIsSaved(false)
+    }
   }, [title, content])
 
   const saveFile = async () => {
@@ -78,12 +81,15 @@ function App(): React.JSX.Element {
     const result = await window.api.readFile(isSetPath.filePath!)
 
     if (result.success) {
-      console.log('파일을 읽어왔습니다 : ')
+      setIsInitialLoading(true)
+
       const noteData = JSON.parse(result.content!)
       setTitle(noteData.title)
       setContent(noteData.content)
       setCurPath(isSetPath.filePath!)
       setIsSaved(true)
+
+      setTimeout(() => setIsInitialLoading(false), 100)
     } else {
       alert(`읽기 실패: ${result.erorr}`)
     }
@@ -96,9 +102,6 @@ function App(): React.JSX.Element {
         <TitleInput title={title} setTitle={setTitle} />
         <hr className="divider" />
         <NoteEditor key={curPath} value={content} onChange={(val) => setContent(val)}></NoteEditor>
-      </div>
-      <div className="action">
-        <button onClick={readFile}>.juyear 파일 읽기</button>
       </div>
       <Toast type={showToast.type} visible={showToast.visible} />
     </div>
