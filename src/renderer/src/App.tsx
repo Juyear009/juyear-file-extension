@@ -3,7 +3,7 @@ import { NoteEditor } from './components/NoteEditor'
 import { TitleInput } from './components/TitleInput'
 import { Toast } from './components/Toast'
 import { TopNav } from './components/TopNav'
-import { useFileActions } from './hooks/useFileAction'
+import { useFileActions } from './hooks/useFileActions'
 
 function App(): React.JSX.Element {
   const { saveFile } = useFileActions()

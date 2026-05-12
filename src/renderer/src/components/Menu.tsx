@@ -1,5 +1,5 @@
 import styles from './Menu.module.css'
-import { useFileActions } from '../hooks/useFileAction'
+import { useFileActions } from '../hooks/useFileActions'
 
 export const Menu = ({
   isOpen,
@@ -43,6 +43,10 @@ export const Menu = ({
         >
           파일 저장
         </p>
+      </div>
+      <div>
+        <p className={styles.menuTitle}>최근</p>
+        <p className={styles.menuItem}>최근에 연 파일이 없습니다.</p>
       </div>
     </div>
   )
