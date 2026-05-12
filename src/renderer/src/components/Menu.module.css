@@ -24,6 +24,9 @@
   padding: 10px 10px 10px 20px;
   cursor: pointer;
   border-radius: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .menuItem:hover {

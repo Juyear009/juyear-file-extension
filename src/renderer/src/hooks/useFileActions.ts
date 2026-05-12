@@ -39,11 +39,22 @@ export const useFileActions = () => {
     }
   }
 
-  const readFile = async ({ setIsInitialLoading, setIsSaved, setNoteData }: any) => {
-    const isSetPath = await window.api.showReadDialog()
-    if (!isSetPath.success) return
+  const readFile = async ({
+    setIsInitialLoading,
+    setIsSaved,
+    setNoteData,
+    setRecentFiles,
+    alreadyPath
+  }: any) => {
+    let path = alreadyPath
 
-    const result = await window.api.readFile(isSetPath.filePath!)
+    if (!path) {
+      const isSetPath = await window.api.showReadDialog()
+      if (!isSetPath.success) return
+      path = isSetPath.filePath!
+    }
+
+    const result = await window.api.readFile(path)
 
     if (result.success) {
       setIsInitialLoading(true)
@@ -53,13 +64,19 @@ export const useFileActions = () => {
         ...prev,
         title: noteData.title,
         content: noteData.content,
-        curPath: isSetPath.filePath!
+        curPath: path
       }))
       setIsSaved(true)
+      const updatedRecentFiles = await window.api.addRecentFile(path)
+      if (updatedRecentFiles.success) {
+        setRecentFiles(updatedRecentFiles.files!)
+      } else {
+        console.error('최근 파일을 추가하는 데 실패했습니다:', updatedRecentFiles.error)
+      }
 
       setTimeout(() => setIsInitialLoading(false), 100)
     } else {
-      alert(`읽기 실패: ${result.erorr}`)
+      alert(`읽기 실패: ${result.error}`)
     }
   }
 

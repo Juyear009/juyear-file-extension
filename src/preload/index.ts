@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { get } from 'http'
 
 // Custom APIs for renderer
 const api = {}
@@ -11,6 +12,8 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', {
+      getRecentFiles: () => ipcRenderer.invoke('get-recent-files'),
+      addRecentFile: (filePath: string) => ipcRenderer.invoke('add-recent-file', filePath),
       saveFile: (filePath: string, content: string) =>
         ipcRenderer.invoke('save-file', filePath, content),
       showSaveDialog: () => ipcRenderer.invoke('show-save-dialog'),

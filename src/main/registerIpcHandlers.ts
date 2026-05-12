@@ -1,7 +1,10 @@
 import { ipcMain, dialog, BrowserWindow } from 'electron'
 import { fileService } from './fileService'
+import Store from 'electron-store'
 
 export function registerIpcHandlers(mainWindow: BrowserWindow): void {
+  const store = new Store()
+
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if ((input.control || input.meta) && input.key.toLowerCase() === 's') {
       if (input.type === 'keyDown') {
@@ -10,6 +13,26 @@ export function registerIpcHandlers(mainWindow: BrowserWindow): void {
         event.preventDefault()
       }
     }
+  })
+
+  ipcMain.handle('get-recent-files', async () => {
+    try {
+      const recentFiles = store.get('recentFiles', []) as string[]
+      return { success: true, files: recentFiles }
+    } catch (error) {
+      console.error('최근 파일을 불러오는 중 오류 발생:', error)
+      return { success: false, error: error }
+    }
+  })
+
+  ipcMain.handle('add-recent-file', async (_event, filePath) => {
+    const recentFiles = store.get('recentFiles', []) as string[]
+    const updatedRecentFiles = [filePath, ...recentFiles.filter((path) => path !== filePath)].slice(
+      0,
+      10
+    )
+    store.set('recentFiles', updatedRecentFiles)
+    return { success: true, files: updatedRecentFiles }
   })
 
   ipcMain.handle('save-file', async (_event, filePath, content) => {
