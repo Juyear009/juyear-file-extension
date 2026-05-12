@@ -3,16 +3,24 @@ import { NoteEditor } from './components/NoteEditor'
 import { TitleInput } from './components/TitleInput'
 import { Toast } from './components/Toast'
 import { TopNav } from './components/TopNav'
+import { useFileActions } from './hooks/useFileAction'
 
 function App(): React.JSX.Element {
-  const [title, setTitle] = useState<string>('')
-  const [content, setContent] = useState<string>('')
-  const [curPath, setCurPath] = useState<string | undefined>(undefined)
+  const { saveFile } = useFileActions()
+  const [noteData, setNoteData] = useState<{
+    title: string
+    content: string
+    curPath: string | undefined
+  }>({
+    title: '',
+    content: '',
+    curPath: undefined
+  })
   const [showToast, setShowToast] = useState<{ type: boolean; visible: boolean }>({
     type: true,
     visible: false
   })
-  const [isSaved, setIsSaved] = useState<boolean>(true)
+  const [isSaved, setIsSaved] = useState<boolean>(false)
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -20,7 +28,12 @@ function App(): React.JSX.Element {
 
     try {
       removeListener = window.api.onSaveCommand(() => {
-        saveFile()
+        saveFile({
+          noteData,
+          setNoteData,
+          setIsSaved,
+          setShowToast
+        })
       })
     } catch (error) {
       console.error(error)
@@ -31,77 +44,36 @@ function App(): React.JSX.Element {
         removeListener()
       }
     }
-  }, [title, content, curPath])
+  }, [noteData])
 
   useEffect(() => {
     if (!isInitialLoading) {
       setIsSaved(false)
     }
-  }, [title, content])
-
-  const saveFile = async () => {
-    if (!content || !title) {
-      alert('내용과 제목을 입력해주세요.')
-      return
-    }
-
-    let path = curPath
-
-    if (!path) {
-      const isSetPath = await window.api.showSaveDialog()
-      if (!isSetPath.success) return
-
-      setCurPath(isSetPath.filePath!)
-      path = isSetPath.filePath!
-    }
-
-    const noteData = {
-      title,
-      content,
-      lastModified: Date.now()
-    }
-    const stringifiedData = JSON.stringify(noteData)
-
-    const result = await window.api.saveFile(path, stringifiedData)
-
-    if (result.success) {
-      setIsSaved(true)
-      setShowToast({ type: true, visible: true })
-      setTimeout(() => setShowToast({ type: true, visible: false }), 3000)
-    } else {
-      setShowToast({ type: false, visible: true })
-      setTimeout(() => setShowToast({ type: false, visible: false }), 3000)
-    }
-  }
-
-  const readFile = async () => {
-    const isSetPath = await window.api.showReadDialog()
-    if (!isSetPath.success) return
-
-    const result = await window.api.readFile(isSetPath.filePath!)
-
-    if (result.success) {
-      setIsInitialLoading(true)
-
-      const noteData = JSON.parse(result.content!)
-      setTitle(noteData.title)
-      setContent(noteData.content)
-      setCurPath(isSetPath.filePath!)
-      setIsSaved(true)
-
-      setTimeout(() => setIsInitialLoading(false), 100)
-    } else {
-      alert(`읽기 실패: ${result.erorr}`)
-    }
-  }
+  }, [noteData.content, noteData.title])
 
   return (
     <div className="container">
-      <TopNav path={curPath} isSaved={isSaved} />
+      <TopNav
+        path={noteData.curPath}
+        isSaved={isSaved}
+        noteData={noteData}
+        setIsSaved={setIsSaved}
+        setNoteData={setNoteData}
+        setShowToast={setShowToast}
+        setIsInitialLoading={setIsInitialLoading}
+      />
       <div>
-        <TitleInput title={title} setTitle={setTitle} />
+        <TitleInput
+          title={noteData.title}
+          setTitle={(title) => setNoteData((prev) => ({ ...prev, title }))}
+        />
         <hr className="divider" />
-        <NoteEditor key={curPath} value={content} onChange={(val) => setContent(val)}></NoteEditor>
+        <NoteEditor
+          key={noteData.curPath}
+          value={noteData.content}
+          onChange={(content) => setNoteData((prev) => ({ ...prev, content }))}
+        ></NoteEditor>
       </div>
       <Toast type={showToast.type} visible={showToast.visible} />
     </div>

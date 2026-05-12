@@ -4,7 +4,23 @@ import menuIcon from '../assets/burger-menu.svg'
 import { useState } from 'react'
 import { Menu } from './Menu'
 
-export const TopNav = ({ path, isSaved }: { path: string | undefined; isSaved: boolean }) => {
+export const TopNav = ({
+  path,
+  isSaved,
+  noteData,
+  setIsSaved,
+  setNoteData,
+  setShowToast,
+  setIsInitialLoading
+}: {
+  path: string | undefined
+  isSaved: boolean
+  noteData: any
+  setIsSaved: (isSaved: boolean) => void
+  setNoteData: (noteData: any) => void
+  setShowToast: (showToast: { type: boolean; visible: boolean }) => void
+  setIsInitialLoading: (isInitialLoading: boolean) => void
+}) => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
 
   return (
@@ -30,7 +46,14 @@ export const TopNav = ({ path, isSaved }: { path: string | undefined; isSaved: b
           <p>SECRET ON</p>
         </div>
       </div>
-      <Menu isOpen={isOpenMenu} />
+      <Menu
+        isOpen={isOpenMenu}
+        noteData={noteData}
+        setIsSaved={setIsSaved}
+        setNoteData={setNoteData}
+        setShowToast={setShowToast}
+        setIsInitialLoading={setIsInitialLoading}
+      />
     </>
   )
 }
