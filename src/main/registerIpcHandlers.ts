@@ -1,4 +1,4 @@
-import { ipcMain, dialog, globalShortcut, BrowserWindow } from 'electron'
+import { ipcMain, dialog, BrowserWindow } from 'electron'
 import { fileService } from './fileService'
 
 export function registerIpcHandlers(mainWindow: BrowserWindow): void {

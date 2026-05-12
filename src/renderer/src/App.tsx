@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react'
 import { NoteEditor } from './components/NoteEditor'
 import { TitleInput } from './components/TitleInput'
+import { Toast } from './components/Toast'
 
 function App(): React.JSX.Element {
   const [title, setTitle] = useState<string>('')
   const [content, setContent] = useState<string>('')
   const [curPath, setCurPath] = useState<string | undefined>(undefined)
+  const [showToast, setShowToast] = useState<{ type: boolean; visible: boolean }>({
+    type: true,
+    visible: false
+  })
 
   useEffect(() => {
     let removeListener: void | (() => void)
@@ -51,9 +56,11 @@ function App(): React.JSX.Element {
     const result = await window.api.saveFile(path, stringifiedData)
 
     if (result.success) {
-      alert('파일이 저장되었습니다.')
+      setShowToast({ type: true, visible: true })
+      setTimeout(() => setShowToast({ type: true, visible: false }), 3000)
     } else {
-      alert(`저장 실패: ${result.erorr}`)
+      setShowToast({ type: false, visible: true })
+      setTimeout(() => setShowToast({ type: false, visible: false }), 3000)
     }
   }
 
@@ -86,6 +93,7 @@ function App(): React.JSX.Element {
         <button onClick={saveFile}>.juyear 파일로 저장</button>
         <button onClick={readFile}>.juyear 파일 읽기</button>
       </div>
+      <Toast type={showToast.type} visible={showToast.visible} />
     </div>
   )
 }
