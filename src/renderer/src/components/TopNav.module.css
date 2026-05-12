@@ -1,0 +1,23 @@
+.topNav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  padding: 10px 0px;
+  color: var(--color-text-dark);
+  font-size: smaller;
+  background-color: var(--color-primary-dark);
+}
+
+.pathInfo {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.title {
+  margin-right: 20px;
+}

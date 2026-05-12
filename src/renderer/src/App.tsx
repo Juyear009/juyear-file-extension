@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { NoteEditor } from './components/NoteEditor'
 import { TitleInput } from './components/TitleInput'
 import { Toast } from './components/Toast'
+import { TopNav } from './components/TopNav'
 
 function App(): React.JSX.Element {
   const [title, setTitle] = useState<string>('')
@@ -11,6 +12,7 @@ function App(): React.JSX.Element {
     type: true,
     visible: false
   })
+  const [isSaved, setIsSaved] = useState<boolean>(true)
 
   useEffect(() => {
     let removeListener: void | (() => void)
@@ -29,6 +31,10 @@ function App(): React.JSX.Element {
       }
     }
   }, [title, content, curPath])
+
+  useEffect(() => {
+    setIsSaved(false)
+  }, [title, content])
 
   const saveFile = async () => {
     if (!content || !title) {
@@ -56,6 +62,7 @@ function App(): React.JSX.Element {
     const result = await window.api.saveFile(path, stringifiedData)
 
     if (result.success) {
+      setIsSaved(true)
       setShowToast({ type: true, visible: true })
       setTimeout(() => setShowToast({ type: true, visible: false }), 3000)
     } else {
@@ -76,6 +83,7 @@ function App(): React.JSX.Element {
       setTitle(noteData.title)
       setContent(noteData.content)
       setCurPath(isSetPath.filePath!)
+      setIsSaved(true)
     } else {
       alert(`읽기 실패: ${result.erorr}`)
     }
@@ -83,14 +91,13 @@ function App(): React.JSX.Element {
 
   return (
     <div className="container">
+      <TopNav path={curPath} isSaved={isSaved} />
       <div>
-        <h1 className="text">JUYEAR SECRET FILE EXTENSION</h1>
         <TitleInput title={title} setTitle={setTitle} />
         <hr className="divider" />
         <NoteEditor key={curPath} value={content} onChange={(val) => setContent(val)}></NoteEditor>
       </div>
       <div className="action">
-        <button onClick={saveFile}>.juyear 파일로 저장</button>
         <button onClick={readFile}>.juyear 파일 읽기</button>
       </div>
       <Toast type={showToast.type} visible={showToast.visible} />
