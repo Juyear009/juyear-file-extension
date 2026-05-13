@@ -3,6 +3,7 @@ export const useFileActions = () => {
     setIsSaved,
     setShowToast,
     setNoteData,
+    setRecentFiles,
     noteData: { title, content, curPath }
   }: any) => {
     if (!content || !title) {
@@ -15,7 +16,7 @@ export const useFileActions = () => {
     if (!path) {
       const isSetPath = await window.api.showSaveDialog()
       if (!isSetPath.success) return
-
+      console.log('fdsa')
       setNoteData((prev) => ({ ...prev, curPath: isSetPath.filePath! }))
       path = isSetPath.filePath!
     }
@@ -32,6 +33,12 @@ export const useFileActions = () => {
     if (result.success) {
       setIsSaved(true)
       setShowToast({ type: true, visible: true })
+      const updatedRecentFiles = await window.api.addRecentFile(path)
+      if (updatedRecentFiles.success) {
+        setRecentFiles(updatedRecentFiles.files!)
+      } else {
+        console.error('최근 파일을 추가하는 데 실패했습니다:', updatedRecentFiles.error)
+      }
       setTimeout(() => setShowToast({ type: true, visible: false }), 3000)
     } else {
       setShowToast({ type: false, visible: true })

@@ -10,8 +10,7 @@ export const TopNav = ({
   noteData,
   setIsSaved,
   setNoteData,
-  setShowToast,
-  setIsInitialLoading
+  setShowToast
 }: {
   path: string | undefined
   isSaved: boolean
@@ -19,7 +18,6 @@ export const TopNav = ({
   setIsSaved: (isSaved: boolean) => void
   setNoteData: (noteData: any) => void
   setShowToast: (showToast: { type: boolean; visible: boolean }) => void
-  setIsInitialLoading: (isInitialLoading: boolean) => void
 }) => {
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false)
 
@@ -52,7 +50,7 @@ export const TopNav = ({
         setIsSaved={setIsSaved}
         setNoteData={setNoteData}
         setShowToast={setShowToast}
-        setIsInitialLoading={setIsInitialLoading}
+        setIsOpen={setIsOpenMenu}
       />
     </>
   )

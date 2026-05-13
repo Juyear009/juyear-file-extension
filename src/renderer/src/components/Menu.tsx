@@ -1,30 +1,48 @@
 import styles from './Menu.module.css'
 import { useFileActions } from '../hooks/useFileActions'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const Menu = ({
   isOpen,
   noteData,
+  setIsOpen,
   setIsSaved,
   setNoteData,
-  setShowToast,
-  setIsInitialLoading
+  setShowToast
 }: {
   isOpen: boolean
   noteData: any
+  setIsOpen: (isOpen: boolean) => void
   setIsSaved: (isSaved: boolean) => void
   setNoteData: (noteData: any) => void
   setShowToast: (showToast: { type: boolean; visible: boolean }) => void
-  setIsInitialLoading: (isInitialLoading: boolean) => void
 }) => {
   const { saveFile, readFile } = useFileActions()
   const [recentFiles, setRecentFiles] = useState<string[]>([])
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const newFile = async () => {
-    await saveFile({ noteData, setNoteData, setIsSaved, setShowToast })
+    await saveFile({ noteData, setNoteData, setIsSaved, setShowToast, setRecentFiles })
     setNoteData({ title: '', content: '', curPath: undefined })
     setIsSaved(false)
   }
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (isOpen && menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleOutsideClick)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick)
+    }
+  }, [isOpen])
 
   useEffect(() => {
     const fetchRecentFiles = async () => {
@@ -43,8 +61,38 @@ export const Menu = ({
     fetchRecentFiles()
   }, [])
 
+  useEffect(() => {
+    let removeListener: void | (() => void)
+
+    try {
+      removeListener = window.api.onSaveCommand(() => {
+        saveFile({
+          noteData,
+          setNoteData,
+          setIsSaved,
+          setShowToast,
+          setRecentFiles
+        })
+      })
+    } catch (error) {
+      console.error(error)
+    }
+
+    return () => {
+      if (typeof removeListener === 'function') {
+        removeListener()
+      }
+    }
+  }, [noteData])
+
+  useEffect(() => {
+    if (!isInitialLoading) {
+      setIsSaved(false)
+    }
+  }, [noteData.content, noteData.title])
+
   return (
-    <div className={`${styles.menu} ${isOpen ? styles.visible : ''}`}>
+    <div className={`${styles.menu} ${isOpen ? styles.visible : ''}`} ref={menuRef}>
       <div>
         <p className={styles.menuTitle}>파일</p>
         <p className={styles.menuItem} onClick={newFile}>
@@ -66,9 +114,25 @@ export const Menu = ({
         </p>
         <p
           className={styles.menuItem}
-          onClick={() => saveFile({ noteData, setNoteData, setIsSaved, setShowToast })}
+          onClick={() =>
+            saveFile({ noteData, setNoteData, setIsSaved, setShowToast, setRecentFiles })
+          }
         >
           파일 저장
+        </p>
+        <p
+          className={styles.menuItem}
+          onClick={() =>
+            saveFile({
+              noteData: { title: noteData.title, content: noteData.content, curPath: undefined },
+              setNoteData,
+              setIsSaved,
+              setShowToast,
+              setRecentFiles
+            })
+          }
+        >
+          다른 이름으로 저장
         </p>
       </div>
       <div>
@@ -79,7 +143,7 @@ export const Menu = ({
               key={index}
               className={styles.menuItem}
               onClick={async () => {
-                await saveFile({ noteData, setNoteData, setIsSaved, setShowToast })
+                await saveFile({ noteData, setNoteData, setIsSaved, setShowToast, setRecentFiles })
                 await readFile({
                   setIsInitialLoading,
                   setIsSaved,

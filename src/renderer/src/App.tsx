@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { NoteEditor } from './components/NoteEditor'
 import { TitleInput } from './components/TitleInput'
 import { Toast } from './components/Toast'
 import { TopNav } from './components/TopNav'
-import { useFileActions } from './hooks/useFileActions'
 
 function App(): React.JSX.Element {
-  const { saveFile } = useFileActions()
   const [noteData, setNoteData] = useState<{
     title: string
     content: string
@@ -21,36 +19,6 @@ function App(): React.JSX.Element {
     visible: false
   })
   const [isSaved, setIsSaved] = useState<boolean>(false)
-  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    let removeListener: void | (() => void)
-
-    try {
-      removeListener = window.api.onSaveCommand(() => {
-        saveFile({
-          noteData,
-          setNoteData,
-          setIsSaved,
-          setShowToast
-        })
-      })
-    } catch (error) {
-      console.error(error)
-    }
-
-    return () => {
-      if (typeof removeListener === 'function') {
-        removeListener()
-      }
-    }
-  }, [noteData])
-
-  useEffect(() => {
-    if (!isInitialLoading) {
-      setIsSaved(false)
-    }
-  }, [noteData.content, noteData.title])
 
   return (
     <div className="container">
@@ -61,7 +29,6 @@ function App(): React.JSX.Element {
         setIsSaved={setIsSaved}
         setNoteData={setNoteData}
         setShowToast={setShowToast}
-        setIsInitialLoading={setIsInitialLoading}
       />
       <div>
         <TitleInput
