@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.juyear.editor
 productName: file-extension
 directories:
   buildResources: build
@@ -6,7 +6,7 @@ fileAssociations:
   - ext: juyear
     name: Juyear File
     description: Juyear Editor Document
-    icon: build/icon.png
+    icon: build/juyear.ico
     role: Editor
     isPackage: false
 files:
