@@ -2,6 +2,12 @@ appId: com.electron.app
 productName: file-extension
 directories:
   buildResources: build
+fileAssociations:
+  - ext: juyear
+    name: Juyear File
+    description: Juyear Editor Document
+    icon: build/icon.png
+    role: Editor
 files:
   - '!**/.vscode/*'
   - '!src/*'
