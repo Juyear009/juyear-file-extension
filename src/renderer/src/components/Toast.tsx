@@ -6,7 +6,7 @@ export const Toast = ({ type, visible }: { type: boolean; visible: boolean }) =>
       className={`${styles.toast} ${type ? styles.success : styles.error} ${visible ? styles.visible : ''}`}
     >
       <div className={styles.content}>
-        <p>{type ? '저장되었습니다.' : '오류가 발생했습니다.'}</p>
+        <p>{type ? '저장 완료!' : '오류 발생'}</p>
       </div>
     </div>
   )

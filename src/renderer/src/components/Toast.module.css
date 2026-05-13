@@ -16,9 +16,9 @@
 }
 
 .success {
-  background-color: #28a745;
+  border-left: 6px solid #28a745;
 }
 
 .error {
-  background-color: #dc3545;
+  border-left: 6px solid #dc3545;
 }
