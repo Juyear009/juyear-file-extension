@@ -18,6 +18,13 @@ function createWindow(): void {
     }
   })
 
+  const filePath = process.argv.find((arg) => arg.endsWith('.juyear'))
+  if (filePath) {
+    mainWindow.webContents.on('did-finish-load', () => {
+      mainWindow.webContents.send('open-file-at-start', filePath)
+    })
+  }
+
   registerIpcHandlers(mainWindow)
 
   mainWindow.on('ready-to-show', () => {

@@ -11,5 +11,6 @@ interface Window {
     onSaveCommand: (callback: () => void) => void
     readFile: (filePath: string) => Promise<{ success: boolean; content?: string; error?: string }>
     showReadDialog: () => Promise<{ success: boolean; filePath?: string }>
+    onOpenFileAtStart: (callback: (filePath: string) => void) => void
   }
 }

@@ -91,6 +91,18 @@ export const Menu = ({
     }
   }, [noteData.content, noteData.title])
 
+  useEffect(() => {
+    window.api.onOpenFileAtStart((filePath: string) => {
+      readFile({
+        setIsInitialLoading,
+        setIsSaved,
+        setNoteData,
+        setRecentFiles,
+        alreadyPath: filePath
+      })
+    })
+  }, [])
+
   return (
     <div className={`${styles.menu} ${isOpen ? styles.visible : ''}`} ref={menuRef}>
       <div>

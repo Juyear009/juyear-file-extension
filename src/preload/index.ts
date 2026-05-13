@@ -24,7 +24,10 @@ if (process.contextIsolated) {
         }
       },
       readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
-      showReadDialog: () => ipcRenderer.invoke('show-read-dialog')
+      showReadDialog: () => ipcRenderer.invoke('show-read-dialog'),
+      onOpenFileAtStart: (callback: (filePath: string) => void) => {
+        ipcRenderer.on('open-file-at-start', (_event, filePath) => callback(filePath))
+      }
     })
   } catch (error) {
     console.error(error)
